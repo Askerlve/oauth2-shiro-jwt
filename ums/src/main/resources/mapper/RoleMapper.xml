@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.askerlve.ums.dao.RoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="baseResultMap" type="com.askerlve.ums.model.Role">
+        <id column="id" property="id"/>
+        <result column="role_name" property="roleName"/>
+        <result column="role_key" property="roleKey"/>
+        <result column="role_desc" property="roleDesc"/>
+        <result column="status" property="status"/>
+        <result column="application_key" property="applicationKey" />
+        <result column="create_time" property="createTime"/>
+        <result column="create_user_id" property="createUserId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_user_id" property="updateUserId"/>
+    </resultMap>
+
+    <sql id="base_columns">
+		r.id,r.role_name,r.role_key,r.role_desc,r.status,r.application_key,r.create_time,r.create_user_id,r.update_time,r.update_user_id
+	</sql>
+
+    <select id="getRolesByUserAndAppKey" resultMap="baseResultMap" parameterType="java.lang.Integer">
+        SELECT
+        <include refid="base_columns"/>
+        FROM `user` u INNER JOIN `user_role` ur ON u.`id` = ur.`user_id` INNER JOIN `role` r ON ur.`role_id` = r.`id`
+        WHERE u.`id` = ${userId} AND r.application_key = #{applicationKey}
+        AND r.`status` = 1
+    </select>
+
+</mapper>

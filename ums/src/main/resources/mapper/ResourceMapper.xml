@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.askerlve.ums.dao.ResourceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="baseResultMap" type="com.askerlve.ums.model.Resource">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="application_id" property="applicationId"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="url" property="url"/>
+        <result column="description" property="description"/>
+        <result column="type" property="type"/>
+        <result column="icon" property="icon"/>
+        <result column="order" property="order"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_user_id" property="createUserId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_user_id" property="updateUserId"/>
+    </resultMap>
+
+    <sql id="base_columns">
+		r.id,r.parent_id,r.application_id,r.name,r.code,r.url,r.description,r.type,r.icon,r.order,r.status,r.create_time,r.create_user_id,r.update_time,r.update_user_id
+	</sql>
+
+    <select id="getResourcesByUserAndAppKey" resultMap="baseResultMap">
+        (SELECT
+        <include refid="base_columns"/>
+        FROM `user` u,`user_resource` ur,`resource` r,`application` app WHERE u.id = ur.user_id AND r.id =
+        ur.resource_id
+        AND r.application_id = app.id AND u.status=1 AND r.status = 1 AND
+        u.id = ${userId} AND app.application_key =
+        #{applicationKey})
+        UNION
+        (SELECT
+        <include refid="base_columns"/>
+        FROM `user` u,`user_role` ur,`role` role,`role_resource` rr, `resource` r ,`application` app WHERE u.id =
+        ur.user_id AND
+        ur.role_id = role.id AND role.id = rr.role_id AND r.id = rr.resource_id AND r.application_id = app.id AND
+        role.application_key = app.application_key AND
+        u.status=1 AND r.status = 1 AND role.status = 1
+        AND u.id = ${userId} AND app.application_key = #{applicationKey})
+    </select>
+
+    <select id="getResourcesByAppKey" parameterType="java.lang.String" resultMap="baseResultMap">
+        SELECT
+        <include refid="base_columns"/>
+        FROM `resource` r,`application` app WHERE r.application_id = app.id AND app.application_key = #{applicationKey}
+    </select>
+</mapper>

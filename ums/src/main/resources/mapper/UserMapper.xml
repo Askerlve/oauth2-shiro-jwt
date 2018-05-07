@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.askerlve.ums.dao.UserMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="baseResultMap" type="com.askerlve.ums.model.User">
+		<id column="id" property="id" />
+		<result column="username" property="username" />
+		<result column="password" property="password" />
+		<result column="company" property="company" />
+		<result column="email" property="email" />
+		<result column="secret" property="secret" />
+		<result column="status" property="status" />
+		<result column="create_time" property="createTime" />
+		<result column="create_user_id" property="createUserId" />
+		<result column="update_time" property="updateTime" />
+		<result column="update_user_id" property="updateUserId" />
+	</resultMap>
+
+</mapper>
