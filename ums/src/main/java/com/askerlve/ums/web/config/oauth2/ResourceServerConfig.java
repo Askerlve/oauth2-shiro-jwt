@@ -46,6 +46,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/oauth/login").permitAll()
                 .antMatchers("/oauth/token").permitAll()
+                .antMatchers("/oauth/auth/refresh").permitAll()
                 .antMatchers("/swagger*/**").permitAll()
                 .antMatchers("/v2/**").permitAll()
                 .antMatchers("/webjars/**").permitAll()

@@ -3,6 +3,7 @@ package com.askerlve.ums.controller.oauth2;
 import com.askerlve.ums.controller.base.BaseController;
 import com.askerlve.ums.controller.oauth2.dto.oauth.Oauth2JudgePermissionParams;
 import com.askerlve.ums.controller.oauth2.dto.oauth.Oauth2ListPermissionParams;
+import com.askerlve.ums.controller.oauth2.dto.oauth.Oauth2RefreshTokenParams;
 import com.askerlve.ums.exception.AuthException;
 import com.askerlve.ums.model.Application;
 import com.askerlve.ums.model.Resource;
@@ -11,6 +12,7 @@ import com.askerlve.ums.service.IApplicationService;
 import com.askerlve.ums.service.IResourceService;
 import com.askerlve.ums.service.IUserService;
 import com.askerlve.ums.utils.content.Config;
+import com.askerlve.ums.web.oauth2.service.TokenService;
 import com.askerlve.ums.web.result.ResultInfo;
 import com.askerlve.ums.web.result.ResultUtil;
 import io.swagger.annotations.Api;
@@ -22,11 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,9 @@ public class Oauth2AuthController extends BaseController {
 
     @Autowired
     private IApplicationService iApplicationService;
+
+    @Autowired
+    private TokenService tokenService;
 
     @PostMapping(value = "/judge/permission")
     @ApiOperation(value = "判断当前用户是否有权限")
@@ -130,6 +134,24 @@ public class Oauth2AuthController extends BaseController {
         } else {
             throw new AuthException("Params invalid!", 504);
         }
+
+        return resultInfo;
+    }
+
+    @PostMapping(value = "/refresh")
+    @ApiOperation(value = "刷新token")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = Config.JWT_CUSTOMER_TOKEN_NAME, value = "basic Authorization token，Basic + \" \" + (客户端用户名 + \":\" + 客户端密码)进行base64编码", required = true, dataType = "string", paramType = "header")
+    })
+    public ResultInfo refreshToken(@RequestHeader("Authorization") String Authorization, @RequestBody Oauth2RefreshTokenParams oauth2RefreshTokenParams) throws IOException {
+
+        if (Objects.isNull(oauth2RefreshTokenParams) || StringUtils.isBlank(oauth2RefreshTokenParams.getRefreshToken()) || Authorization == null || !Authorization.startsWith("Basic ")) {
+            throw new AuthException("Params invalid!", 504);
+        }
+
+        OAuth2AccessToken token = this.tokenService.refreshAccessToken(Authorization, oauth2RefreshTokenParams.getRefreshToken());
+
+        ResultInfo resultInfo = ResultUtil.createSuccess(200, token);
 
         return resultInfo;
     }
