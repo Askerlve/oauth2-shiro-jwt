@@ -180,7 +180,7 @@ POST /oauth/login
 ```
 输入参数|必须|数据类型|参数类型|中文描述
 ---|---|---|---|---
-Authorization|yes|String|header|客户端用户名密码base64进行base64编码
+Authorization|yes|String|header|Basic + " " + (客户端用户名 + ":" + 客户端密码进行base64编码)
 Content-Type|yes|String|header|请求入参方式,只支持application/x-www-form-urlencoded或者form-data
 username|yes|String|body|用户名
 password|yes|String|body|密码
@@ -244,7 +244,7 @@ POST /oauth/token
 
 输入参数|必须|数据类型|参数类型|中文描述
 ---|---|---|---|---
-Authorization|yes|String|header|客户端用户名密码base64进行base64编码
+Authorization|yes|String|header|Basic + " " + (客户端用户名 + ":" + 客户端密码进行base64编码)
 Content-Type|yes|String|header|请求入参方式,只支持application/x-www-form-urlencoded或者form-data
 grant_type|yes|String|body|操作类型
 refresh_token|yes|String|body|刷新token的值
