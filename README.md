@@ -236,7 +236,7 @@ curl -X POST \
 }
 ```
 
-#### 刷新token
+#### oauth2方式刷新token
 
 ```
 POST /oauth/token
@@ -278,6 +278,53 @@ curl -X POST \
     "expires_in": 599,
     "scope": "all",
     "jti": "b02863ff-990c-493c-afe9-f08e0ba81ee5"
+}
+```
+
+#### 自定义方式刷新token
+
+```
+POST /oauth/auth/refresh
+```
+
+输入参数|必须|数据类型|参数类型|中文描述
+---|---|---|---|---
+Authorization|yes|String|header|Basic + " " + (客户端用户名 + ":" + 客户端密码进行base64编码)
+refresh_token|yes|String|body|刷新token的值
+
+返回Result|数据类型|中文描述
+---|---|---
+access_token|String|access_token值
+jti|string|token唯一标识
+expiresIn|int|多少秒以后过期
+refreshToken|string|刷新token信息
+scope|string|授权作用域
+tokenType|string|token类型
+
+>请求示例
+
+```
+curl -X POST "http://localhost:8030/oauth/auth/refresh" 
+-H "Authorization: Basic dXJ1bGU6dXJ1bGU=" 
+-H "Content-Type: application/json" 
+-d "{ \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Mjc2NzU4OTEsInVzZXJfbmFtZSI6ImFza2VybHZlIiwianRpIjoiNjBlM2YxOGQtNWFhMS00NjcwLWFiMGYtMGUwODc5ZWE5YjhiIiwiY2xpZW50X2lkIjoidXJ1bGUiLCJzY29wZSI6WyJhbGwiXSwiYXRpIjoiYTA0YTM1MzYtMGU3ZS00MDU1LTlmY2MtZjIzZTQ2NmU3Yzc3In0.xB7ciV8syq79VHLYOEM9R365J7VSPXdL0b0oPog1T4c\"}"
+```
+
+>返回示例
+
+```
+{
+  "type": 1,
+  "messageCode": 200,
+  "message": "操作成功!",
+  "result": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MjYzODA1MDksInVzZXJfbmFtZSI6ImFza2VybHZlIiwianRpIjoiNTM0ZDVhZDItMGQwMS00YjI5LTk2NTctYzU1YjlmZjIwNTBhIiwiY2xpZW50X2lkIjoidXJ1bGUiLCJzY29wZSI6WyJhbGwiXX0.l8NrCs8C0YLkD3qC797JEtED3_PMD689wzj30DvujWs",
+    "token_type": "bearer",
+    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Mjc2NzU4OTEsInVzZXJfbmFtZSI6ImFza2VybHZlIiwianRpIjoiNjBlM2YxOGQtNWFhMS00NjcwLWFiMGYtMGUwODc5ZWE5YjhiIiwiY2xpZW50X2lkIjoidXJ1bGUiLCJzY29wZSI6WyJhbGwiXSwiYXRpIjoiNTM0ZDVhZDItMGQwMS00YjI5LTk2NTctYzU1YjlmZjIwNTBhIn0.PT0Zkg1ftH1CSXGbkUp02iZRr68iqfmkI2xIHBzPtM8",
+    "expires_in": 599,
+    "scope": "all",
+    "jti": "534d5ad2-0d01-4b29-9657-c55b9ff2050a"
+  }
 }
 ```
 
