@@ -34,7 +34,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("认证服务API")
-                .description("快牛金科认证服务API")
+                .description("Askerlve认证服务API")
                 .termsOfServiceUrl("")
                 .version("1.0")
                 .build();
